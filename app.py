@@ -17,11 +17,15 @@ app.app_context().push()
 
 @app.route('/api/cupcakes')
 def list_cupcakes():
-    """Returns json of all cupcakes"""
+    """Returns json of all cupcakes resources"""
     all_cupcakes = [cupcake.serialize() for cupcake in Cupcake.query.all()]
     return jsonify(cupcakes=all_cupcakes)
 
-
+@app.route('/api/cupcakes/<int:id>')
+def get_cupcake(id):
+    """Returns json of a single cupcake resource"""
+    cupcake = Cupcake.query.get_or_404(id)
+    return jsonify(cupcake=cupcake.serialize())
 
 if __name__ == "__main__":
     app.run(debug=True)
