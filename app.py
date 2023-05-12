@@ -16,9 +16,10 @@ connect_db(app)
 app.app_context().push()
 
 @app.route('/api/cupcakes')
-def get_all_cupcakes():
+def list_cupcakes():
     """Returns json of all cupcakes"""
-    
+    all_cupcakes = [cupcake.serialize() for cupcake in Cupcake.query.all()]
+    return jsonify(cupcakes=all_cupcakes)
 
 
 
