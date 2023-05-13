@@ -1,0 +1,14 @@
+{% extends 'base.html' %} {% block title %}Cupcake Home{% endblock %} {% block
+content %}
+<h1>Cupcakes</h1>
+{% for msg in get_flashed_messages() %}
+<p>{{ msg }}</p>
+{% endfor %}
+<ul>
+  {% for cupcake in cupcakes %}
+  <li class="flavor-type" data-id="{{ cupcake.id }}">{{ cupcake.flavor }}</li>
+  {% endfor %}
+</ul>
+<a href="/cupcakes/new">Add New Cupcake</a>
+
+{% endblock %}

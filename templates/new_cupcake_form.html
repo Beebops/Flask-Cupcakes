@@ -1,0 +1,48 @@
+{% extends 'base.html' %} {% block title %}Add a Cupcake{% endblock %} {% block
+content %}
+<div class="container">
+  <h1>Add A Cupcake</h1>
+  <form action="/cupcakes/new" method="POST">
+    <div class="form-group row">
+      <label for="flavor" class="col-sm-2 col-form-label">Flavor</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="flavor" name="flavor" />
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="size" class="col-sm-2 col-form-label">Size</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="size" name="size" />
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="image" class="col-sm-2 col-form-label">Image</label>
+      <div class="col-sm-10">
+        <input
+          type="text"
+          class="form-control"
+          id="image"
+          name="image"
+          placeholder="enter a URL for image"
+        />
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="rating">Rating</label>
+      <div class="col-sm-10">
+        <input
+          type="number"
+          class="form-control"
+          step="0.1"
+          id="rating"
+          name="rating"
+          min="0"
+          max="10"
+        />
+      </div>
+    </div>
+    <button type="submit" class="btn btn-success">Create Cupcake</button>
+  </form>
+</div>
+
+{% endblock %}
