@@ -1,14 +1,18 @@
 from flask import Flask, jsonify, request, render_template
 from models import db, connect_db, Cupcake
 from flask_debugtoolbar import DebugToolbarExtension
+import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///cupcakes_db'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///cupcakes_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+    os.environ.get('DATABASE_URL', 'postgresql:///cupcakes_db'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 # the toolbar is only enabled in debug mode:
 app.debug = True
 app.config['SECRET_KEY'] = 'shhhsecret'
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 toolbar = DebugToolbarExtension(app)
 
@@ -34,7 +38,7 @@ def create_cupcake():
         flavor=request.json["flavor"],
         size=request.json["size"],
         rating=request.json["rating"],
-        #image=request.json["image"]
+        image=request.json["image"]
     )
     db.session.add(new_cupcake)
     db.session.commit()
