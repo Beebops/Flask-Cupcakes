@@ -1,9 +1,11 @@
 from flask import Flask, jsonify, request, render_template, redirect, flash
+from flask_cors import CORS
 from models import db, connect_db, Cupcake
 from flask_debugtoolbar import DebugToolbarExtension
 import os
 
 app = Flask(__name__)
+CORS(app, methods=['GET', 'POST'])
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///cupcakes_db'
 app.config['SQLALCHEMY_DATABASE_URI'] = (
     os.environ.get('DATABASE_URL', 'postgresql:///cupcakes_db'))
@@ -22,34 +24,15 @@ app.app_context().push()
 @app.route('/')
 def show_cupcakes():
     """Renders html template with a list of all cupcakes"""
-    cupcakes = Cupcake.query.all()
-    return render_template('index.html', cupcakes=cupcakes)
-
-@app.route('/cupcakes/new')
-def show_cupcake_form():
-    """Shows form to create new cupcake"""   
-    return render_template('new_cupcake_form.html')
-
-@app.route('/cupcakes/new', methods=["POST"])
-def handle_cupcake_form():
-    """Adds new cupcake to db"""  
-    flavor = request.form.get('flavor')
-    size = request.form.get('size')
-    image = request.form.get('image', None)
-    rating= request.form.get('rating')
-
-    cupcake = Cupcake(flavor=flavor, size=size, image=image, rating=rating)
-    db.session.add(cupcake)
-    db.session.commit()
-
-    flash(f"A new {cupcake.flavor} cupcake was added!")
-    return redirect('/')
+    #cupcakes = Cupcake.query.all()
+    return render_template('index.html')
 
 @app.route("/api/cupcakes")
 def list_cupcakes():
-    """Returns json of all cupcakes resources"""
-    all_cupcakes = [cupcake.serialize() for cupcake in Cupcake.query.all()]
-    return jsonify(cupcakes=all_cupcakes)
+    """Returns json of all cupcakes resources
+    """
+    cupcakes = [cupcake.serialize() for cupcake in Cupcake.query.all()]
+    return jsonify(cupcakes=cupcakes)
 
 @app.route("/api/cupcakes/<int:id>")
 def get_cupcake(id):
@@ -60,11 +43,12 @@ def get_cupcake(id):
 @app.route("/api/cupcakes", methods=["POST"])
 def create_cupcake():
     """Add a new cupcake resource to db"""
+    data = request.json
     new_cupcake = Cupcake(
-        flavor=request.json["flavor"],
-        size=request.json["size"],
-        rating=request.json["rating"],
-        image=request.json["image"]
+        flavor=data["flavor"],
+        size=data["size"],
+        rating=data["rating"],
+        image=data["image"] or None
     )
     db.session.add(new_cupcake)
     db.session.commit()
@@ -91,5 +75,26 @@ def delete_cupcake(id):
     db.session.commit()
     return jsonify(message="deleted")
 
+
 if __name__ == "__main__":
     app.run(debug=True)
+
+# @app.route('/cupcakes/new')
+# def show_cupcake_form():
+#     """Shows form to create new cupcake"""   
+#     return render_template('new_cupcake_form.html')
+
+# @app.route('/cupcakes/new', methods=["POST"])
+# def handle_cupcake_form():
+#     """Adds new cupcake to db"""  
+#     flavor = request.form.get('flavor')
+#     size = request.form.get('size')
+#     image = request.form.get('image', None)
+#     rating= request.form.get('rating')
+
+#     cupcake = Cupcake(flavor=flavor, size=size, image=image, rating=rating)
+#     db.session.add(cupcake)
+#     db.session.commit()
+
+#     flash(f"A new {cupcake.flavor} cupcake was added!")
+#     return redirect('/')    
