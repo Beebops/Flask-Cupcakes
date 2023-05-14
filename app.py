@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 import os
 
 app = Flask(__name__)
-CORS(app, methods=['GET', 'POST'])
+CORS(app, methods=['GET', 'POST', 'DELETE'])
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///cupcakes_db'
 app.config['SQLALCHEMY_DATABASE_URI'] = (
     os.environ.get('DATABASE_URL', 'postgresql:///cupcakes_db'))
@@ -78,23 +78,3 @@ def delete_cupcake(id):
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-# @app.route('/cupcakes/new')
-# def show_cupcake_form():
-#     """Shows form to create new cupcake"""   
-#     return render_template('new_cupcake_form.html')
-
-# @app.route('/cupcakes/new', methods=["POST"])
-# def handle_cupcake_form():
-#     """Adds new cupcake to db"""  
-#     flavor = request.form.get('flavor')
-#     size = request.form.get('size')
-#     image = request.form.get('image', None)
-#     rating= request.form.get('rating')
-
-#     cupcake = Cupcake(flavor=flavor, size=size, image=image, rating=rating)
-#     db.session.add(cupcake)
-#     db.session.commit()
-
-#     flash(f"A new {cupcake.flavor} cupcake was added!")
-#     return redirect('/')    

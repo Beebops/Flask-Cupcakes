@@ -1,8 +1,10 @@
 const baseURL = 'http://localhost:5000/api'
 
+// on page load, await the response from /api/cupcakes route and use the json that gets returned from that function to render the list of cupcakes in the database
+
 async function showCupcakes() {
   const response = await axios.get(`${baseURL}/cupcakes`)
-  console.log(response.data.cupcakes)
+  // response.data.cupcakes --> {cupcakes: [{id, flavor, rating, size, image}, ...]}
   for (let cupcakeData of response.data.cupcakes) {
     let newCupcake = $(createCupcakeHTML(cupcakeData))
     $('#cupcakes-list').append(newCupcake)
@@ -12,11 +14,13 @@ async function showCupcakes() {
 // generate the HTML for all the cupcakes
 function createCupcakeHTML(cupcake) {
   return `
-      <li class="list-group-item" data-id="${cupcake.id}">
-      ${cupcake.flavor} | ${cupcake.size} | ${cupcake.rating}
-      <button class="btn btn-danger">Delete</button>
-      </li>
+    <div data-id="${cupcake.id}" class="container mb-4 text-center">
+        <li class="list-group-item">
+        ${cupcake.flavor} | ${cupcake.size} | ${cupcake.rating}
+          <button id="delete-btn" class="btn btn-danger ms-4">Delete</button>
+        </li>
       <img class="cupcake-image" src="${cupcake.image}">
+    </div>  
   `
 }
 
@@ -41,8 +45,15 @@ $('#new-cupcake-form').on('submit', async function (e) {
   $('#new-cupcake-form').trigger('reset')
 })
 
+/** handle clicking delete to remove cupcake */
+$('#cupcakes-list').on('click', '.btn-danger', async function (e) {
+  e.preventDefault()
+  let $cupcake = $(e.target).closest('div')
+  console.log($cupcake)
+  let cupcakeId = $cupcake.attr('data-id')
+
+  await axios.delete(`${baseURL}/cupcakes/${cupcakeId}`)
+  $cupcake.remove()
+})
+
 $(showCupcakes)
-
-// on page load, await the response from /api/cupcakes route and use the json that gets returned from that function to render the list of cupcakes in the database
-
-// // response -> {cupcakes: [{id, flavor, rating, size, image}, ...]}
